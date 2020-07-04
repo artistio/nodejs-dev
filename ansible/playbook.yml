@@ -1,0 +1,26 @@
+---
+- name: Setup Vagrant machine for node.js development
+  hosts: all
+  become: true
+  tasks: 
+#  - name: Update apt repo and cache
+#    become_user: root
+#    apt: update_cache=yes force_apt_get=yes cache_valid_time=3600
+
+  - name: Install git version control
+    become_user: root
+    apt: name=git update_cache=yes force_apt_get=yes cache_valid_time=3600
+    
+  - name: Install Node Version Manager (nvm)
+    become_user: vagrant
+    shell: >
+      curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
+    args:
+      creates: "$HOME/.nvm/nvm.sh"
+
+  - name: Install node.js LTS
+    become_user: vagrant
+    shell: "source $HOME/.nvm/nvm.sh && nvm install --lts" 
+    args:
+      chdir: /home/vagrant
+      executable: /bin/bash
